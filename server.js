@@ -5,10 +5,25 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const app = express();
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://crud-jwt-client.vercel.app"
+];
+
 app.use(cors({
-  origin: "http://localhost:3000", // frontend URL
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed for this origin: " + origin));
+    }
+  },
   credentials: true
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 
